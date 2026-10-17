@@ -1,0 +1,82 @@
+phase 1: Indexing
+load → chunk → embed → store
+
+chunking = not preprocessing its an archietecture
+-> smart chunking is very important thats why
+    we use semantic chunking over fixed chunking 
+-> Embedding captures Incomplete meaning
+-> LLM cant synthesis from fragments, it need to have complete sections.
+-> Query wants complete concept
+-> mismatch = poor retrieval
+
+Best chunking practice
+1.chunk size
+too small = loses context
+too large = dilutes meaning
+find the sweet spot between 200-1000 tokens
+
+2.overlap
+preserves context at boundary
+10-20% overlap preserves context
+
+3.split boundary
+fixed = random cout
+recursive = cutting at paragraph/sentences
+semantic = cutting at meaning boundary (best)
+
+4.content type
+code/legal/markdown
+each needs different treatment
+
+chunking strategies compared - which one to use
+semantic chunking
+1.embed each sentences
+2.compare adjacent Embedding
+3.split when similarity drops.
+pros -> qualty
+cons -> speed decreases, token increases
+
+late chunking
+chunk embedding include full document context
+pros -> fukll context preserved, better boundary
+cons -> complex implementation, not all models (jina-embedding)
+
+chunking decision framework
+start
+  ↓
+prototyping quickly → yes → recursive
+  ↓
+simple structured docs → yes → recursive
+  ↓
+quality is critical → yes → semantic
+  ↓
+complex, topic-shifting? → yes → seamantic
+the 80/20 rule for chunking decision
+recursive = 80% of the way
+semantic = the last 20% of the way
+
+Embedding dimensions
+text-embedding-3-small → 1536 dims 
+text-embedding-3-large → 3072 dims (relative large)
+etc...
+smaller the dimensions = faster the model will compute = less semantic nuance captured
+more dimension = more semantic nuanced captured = more storeage = slower search
+(768 - 1536) = sweet spot ♥
+
+phase 2: querying
+user query → embed query → search → retireve → generate(augment) → answer
+
+three rules for production RAG
+1. same embedding model everywhere
+2. embedding quality > quantity
+3. test retrieval separately 
+
+Chroma database workflow
+queries → gen embedding (app) → compared with embedding in database → info pushed to LLM Context window → answer
+
+the RAG fails because:
+1. bad chunking
+2. embedding mismatch
+3. retrieval Noise
+4. context overflow
+5. hallucination
